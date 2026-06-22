@@ -1,5 +1,5 @@
 const EmailHistory = require('../models/EmailHistory');
-const { generateCampaign } = require('../utils/groqAI');
+const { generateCampaign } = require('../utils/Groqai');
 
 // @desc    Generate email campaign and save to history
 // @route   POST /api/email/generate
