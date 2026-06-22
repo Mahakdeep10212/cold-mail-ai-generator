@@ -12,7 +12,13 @@ const sendEmail = async ({ to, subject, html, text }) => {
     return { mock: true, success: true };
   }
 
-  // Create transporter
+  // Validate Gmail credentials when not in mock mode
+  if (process.env.USE_MOCK_EMAIL !== 'true') {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.error('Email credentials not set. Check EMAIL_USER and EMAIL_PASS in .env');
+      throw new Error('Email credentials missing');
+    }
+  }
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {

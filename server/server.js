@@ -28,6 +28,11 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ success: true, message: 'Server is healthy and running.' });
 });
 
+app.get('/api/ping', (req, res) => {
+  console.log('Health and ping routes are set up');
+  res.status(200).json({ success: true, message: 'pong' });
+});
+
 // Serve frontend in production (static assets from client/dist)
 const clientBuildPath = path.join(__dirname, '../client/dist');
 app.use(express.static(clientBuildPath));
