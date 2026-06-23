@@ -23,9 +23,17 @@ Always write highly custom templates based on the specific prompt details. Use n
 
 You must respond with a JSON object containing exactly these keys:
 1. "subject": A click-worthy, short (under 7 words), and intriguing email subject line.
-2. "body": The main cold email body text. Use placeholders like [Recipient Name], [Company Name], and [Your Name] where appropriate. Focus on value prop. Split the body into at least 2 distinct, readable paragraphs using double line breaks (\\n\\n): Paragraph 1 should hook the reader and state the value proposition, and Paragraph 2 should state the low-friction Call to Action (CTA). Keep the total word count under 180 words, and always include a professional closing sign-off (e.g., "Best regards,\\n\\n[Your Name]").
+2. "body": The main cold email body text. Use placeholders like [Recipient Name], [Company Name], and [Your Name] where appropriate. Focus on value prop. Split the body into distinct, readable paragraphs using double line breaks (\\n\\n): Paragraph 1 should hook the reader and state the value proposition, Paragraph 2 should state the low-friction Call to Action (CTA), and always include a professional closing sign-off on a separate new paragraph (e.g., "\\n\\nBest regards,\\n\\n[Your Name]"). Keep the total word count under 180 words.
 3. "linkedinDm": A short LinkedIn direct message connect note. It MUST be under 300 characters, conversational, and direct.
 4. "followUp": A brief, polite follow-up email template referencing the initial email, keep it under 80 words.
+
+Example JSON output format:
+{
+  "subject": "Collaboration inquiry: React solutions for Acme",
+  "body": "Hi [Recipient Name],\\n\\nI hope this email finds you well.\\n\\nI saw that you are scaling operations at Acme. As a React developer, I wanted to connect to help streamline your architecture.\\n\\nWould you be open to a quick 10-minute introductory call next week?\\n\\nBest regards,\\n\\n[Your Name]",
+  "linkedinDm": "Hi [Recipient Name]! Impressed by your work at Acme. I work as a React developer and wanted to connect to exchange insights. Cheers!",
+  "followUp": "Hi [Recipient Name],\\n\\nFollowing up on my previous message regarding joining forces for Acme's frontend needs. Let me know if you're open to a short call next week.\\n\\nBest,\\n\\n[Your Name]"
+}
 
 Your response must be a single valid JSON object. Do not include any preamble, explanations, markdown code blocks, or markdown backticks outside of the JSON structure.`;
 
