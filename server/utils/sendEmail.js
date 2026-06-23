@@ -15,10 +15,11 @@ const sendEmail = async ({ to, subject, html, text }) => {
   // Support Resend HTTP API (Port 443, never blocked by Render)
   if (process.env.RESEND_API_KEY) {
     console.log('RESEND_API_KEY detected. Sending email via Resend HTTP API...');
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Acme <onboarding@resend.dev>';
     return new Promise((resolve, reject) => {
       const https = require('https');
       const reqData = JSON.stringify({
-        from: 'Acme <onboarding@resend.dev>', // Resend default onboarding sender
+        from: fromEmail,
         to: [to],
         subject: subject,
         html: html,
@@ -58,6 +59,63 @@ const sendEmail = async ({ to, subject, html, text }) => {
       req.on('timeout', () => {
         req.destroy();
         reject(new Error('Resend HTTPS request timed out'));
+      });
+      req.write(reqData);
+      req.end();
+    });
+  }
+
+  // Support Brevo HTTP API (Port 443, never blocked by Render)
+  if (process.env.BREVO_API_KEY) {
+    console.log('BREVO_API_KEY detected. Sending email via Brevo HTTP API...');
+    const senderEmail = process.env.BREVO_SENDER_EMAIL || 'sanyogitasinghbgm@gmail.com';
+    return new Promise((resolve, reject) => {
+      const https = require('https');
+      const reqData = JSON.stringify({
+        sender: {
+          name: 'AI Cold Mail Generator',
+          email: senderEmail
+        },
+        to: [{ email: to }],
+        subject: subject,
+        htmlContent: html,
+        textContent: text
+      });
+      const req = https.request({
+        hostname: 'api.brevo.com',
+        path: '/v3/smtp/email',
+        method: 'POST',
+        headers: {
+          'api-key': process.env.BREVO_API_KEY,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Content-Length': Buffer.byteLength(reqData)
+        },
+        timeout: 5000
+      }, (res) => {
+        let body = '';
+        res.on('data', (chunk) => body += chunk);
+        res.on('end', () => {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            try {
+              const parsed = JSON.parse(body);
+              console.log(`Email successfully dispatched via Brevo: ${parsed.messageId}`);
+              resolve(parsed);
+            } catch (e) {
+              resolve({ success: true, raw: body });
+            }
+          } else {
+            reject(new Error(`Brevo API failed with status ${res.statusCode}: ${body}`));
+          }
+        });
+      });
+      req.on('error', (err) => {
+        console.error('Brevo HTTPS request error:', err);
+        reject(err);
+      });
+      req.on('timeout', () => {
+        req.destroy();
+        reject(new Error('Brevo HTTPS request timed out'));
       });
       req.write(reqData);
       req.end();
