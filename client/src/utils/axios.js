@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: (import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : '')).replace(/\/+$/, ''),
+  baseURL: (import.meta.env.VITE_API_URL || 'https://ai-cold-mail-generator-907c.onrender.com').replace(/\/+$/, ''),
   headers: {
     'Content-Type': 'application/json',
   },
