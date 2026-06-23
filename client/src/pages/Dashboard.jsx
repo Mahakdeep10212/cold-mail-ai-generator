@@ -273,7 +273,7 @@ const Dashboard = () => {
                 {activeTab === 'linkedin' && (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-xs font-bold text-brand-400 uppercase tracking-wider">LinkedIn Connect Message (Under 300 Chars)</span>
+                      <span className="text-xs font-bold text-brand-400 uppercase tracking-wider">LinkedIn Connection Note</span>
                       <button
                         onClick={() => handleCopy(currentCampaign.linkedinDm, 'linkedin')}
                         className="text-gray-400 hover:text-white transition-colors p-1"
@@ -466,7 +466,7 @@ const Dashboard = () => {
                 {/* LinkedIn DM */}
                 <div>
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs font-bold text-brand-400 uppercase tracking-wider">2. LinkedIn Direct Message</span>
+                    <span className="text-xs font-bold text-brand-400 uppercase tracking-wider">2. LinkedIn Connection Note</span>
                     <button 
                       onClick={() => handleCopy(selectedHistoryItem.linkedinDm, 'h_li')}
                       className="text-gray-400 hover:text-white flex items-center gap-1 text-xs"

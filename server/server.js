@@ -21,7 +21,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve API routes
 app.use('/api/auth', authRoutes);
+console.log('Auth routes mounted at /api/auth');
 app.use('/api/email', emailRoutes);
+console.log('Email routes mounted at /api/email');
 
 // Base route checker
 app.get('/api/health', (req, res) => {
