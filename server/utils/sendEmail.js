@@ -12,28 +12,40 @@ const sendEmail = async ({ to, subject, html, text }) => {
     return { mock: true, success: true };
   }
 
-  // Validate Gmail credentials when not in mock mode
+  const host = process.env.EMAIL_HOST || process.env.SMTP_HOST;
+  const port = parseInt(process.env.EMAIL_PORT || process.env.SMTP_PORT || '465', 10);
+  const user = process.env.EMAIL_USER || process.env.SMTP_USER;
+  const pass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
+
+  // Validate credentials when not in mock mode
   if (process.env.USE_MOCK_EMAIL !== 'true') {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.error('Email credentials not set. Check EMAIL_USER and EMAIL_PASS in .env');
+    if (!user || !pass) {
+      console.error('Email credentials not set. Check EMAIL_USER and EMAIL_PASS in environment variables.');
       throw new Error('Email credentials missing');
     }
   }
+
   const smtpConfig = {
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: user,
+      pass: pass,
     },
     connectionTimeout: 5000, // 5 seconds timeout
     socketTimeout: 5000,     // 5 seconds socket timeout
   };
 
-  // Dynamic SMTP configurations
-  if (process.env.EMAIL_HOST) {
-    smtpConfig.host = process.env.EMAIL_HOST;
-    smtpConfig.port = parseInt(process.env.EMAIL_PORT || '465', 10);
-    // Secure defaults to true unless explicitly set to false
-    smtpConfig.secure = process.env.EMAIL_SECURE === 'false' ? false : true;
+  // Setup transporter dynamically
+  if (host) {
+    smtpConfig.host = host;
+    smtpConfig.port = port;
+    
+    // Automatically set secure: false for STARTTLS ports (587, 25) unless secure is explicitly set
+    const secureEnv = process.env.EMAIL_SECURE || process.env.SMTP_SECURE;
+    if (secureEnv !== undefined) {
+      smtpConfig.secure = secureEnv === 'false' ? false : true;
+    } else {
+      smtpConfig.secure = (port === 587 || port === 25) ? false : true;
+    }
   } else {
     smtpConfig.service = 'gmail';
   }
@@ -41,7 +53,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
   const transporter = nodemailer.createTransport(smtpConfig);
 
   const mailOptions = {
-    from: `"AI Cold Mail Generator" <${process.env.EMAIL_USER}>`,
+    from: `"AI Cold Mail Generator" <${user || 'no-reply@gmail.com'}>`,
     to,
     subject,
     text,
