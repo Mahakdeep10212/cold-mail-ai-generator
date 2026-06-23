@@ -36,6 +36,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
 
   // Setup transporter dynamically
   if (host) {
+    console.log(`SMTP Connection Attempt: Host=${host}, Port=${port}`);
     smtpConfig.host = host;
     smtpConfig.port = port;
     
@@ -46,7 +47,9 @@ const sendEmail = async ({ to, subject, html, text }) => {
     } else {
       smtpConfig.secure = (port === 587 || port === 25) ? false : true;
     }
+    console.log(`SMTP Transporter Secure option set to: ${smtpConfig.secure}`);
   } else {
+    console.log('No SMTP_HOST specified in environment. Defaulting to standard Gmail service configuration.');
     smtpConfig.service = 'gmail';
   }
 
