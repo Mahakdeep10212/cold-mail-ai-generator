@@ -1,7 +1,18 @@
 import axios from 'axios';
 
+const getBaseURL = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  // Automatically fallback to local express server if running locally
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    return 'http://localhost:5000';
+  }
+  return 'https://ai-cold-mail-generator-907c.onrender.com';
+};
+
 const API = axios.create({
-  baseURL: (import.meta.env.VITE_API_URL || 'https://ai-cold-mail-generator-907c.onrender.com').replace(/\/+$/, ''),
+  baseURL: getBaseURL().replace(/\/+$/, ''),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,9 +21,8 @@ const API = axios.create({
 // Request interceptor to add auth token
 API.interceptors.request.use(
   (config) => {
-    console.log('Request URL:', config.baseURL + config.url);
     // Ensure the request goes to the backend when using a relative path
-    if (config.url && config.url.startsWith('/api/')) {
+    if (config.url && config.url.startsWith('/api/') && !config.url.startsWith('http')) {
       config.url = `${config.baseURL}${config.url}`;
     }
     const token = localStorage.getItem('token');

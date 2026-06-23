@@ -40,13 +40,20 @@ const register = async (req, res, next) => {
         
         await userExists.save();
 
-        // Dispatch OTP
-        await sendEmail({
-          to: email,
-          subject: 'AI Cold Mail Generator - Verify your Email',
-          text: `Your OTP is: ${otp}. It will expire in 10 minutes.`,
-          html: `<p>Your verification code is <strong>${otp}</strong>.</p><p>It will expire in 10 minutes.</p>`,
-        });
+        // Dispatch OTP with error handling
+        try {
+          await sendEmail({
+            to: email,
+            subject: 'AI Cold Mail Generator - Verify your Email',
+            text: `Your OTP is: ${otp}. It will expire in 10 minutes.`,
+            html: `<p>Your verification code is <strong>${otp}</strong>.</p><p>It will expire in 10 minutes.</p>`,
+          });
+        } catch (emailErr) {
+          console.error('Error resending OTP email:', emailErr);
+          if (process.env.USE_MOCK_EMAIL !== 'true') {
+            return res.status(500).json({ success: false, message: 'Failed to send verification email.' });
+          }
+        }
 
         return res.status(200).json({
           success: true,

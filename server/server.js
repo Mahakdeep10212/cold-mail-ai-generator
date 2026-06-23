@@ -2,6 +2,7 @@ require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') }
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const emailRoutes = require('./routes/emailRoutes');
@@ -14,10 +15,23 @@ const app = express();
 // Standard middlewares
 app.use(cors({
   origin: '*', // In production, restrict to your client domain
-  credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Middleware to check database connection status for API routes
+app.use('/api', (req, res, next) => {
+  if (req.path === '/ping' || req.path === '/health') {
+    return next();
+  }
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      success: false,
+      message: 'Database connection is not established. Please check your MONGODB_URI configuration and verify your MongoDB Atlas IP Whitelisting (ensure 0.0.0.0/0 is whitelisted for Render dynamic IPs).',
+    });
+  }
+  next();
+});
 
 // Serve API routes
 app.use('/api/auth', authRoutes);
