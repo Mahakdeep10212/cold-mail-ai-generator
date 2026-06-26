@@ -122,4 +122,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 ## ✍️ Author
-- **Full-Stack Development & Architecture**: **Sanyogita Singh**
+- **Full-Stack Development & Architecture**: **Mahakdeep Kaur**

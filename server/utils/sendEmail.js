@@ -68,7 +68,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
   // Support Brevo HTTP API (Port 443, never blocked by Render)
   if (process.env.BREVO_API_KEY) {
     console.log('BREVO_API_KEY detected. Sending email via Brevo HTTP API...');
-    const senderEmail = process.env.BREVO_SENDER_EMAIL || 'sanyogitasinghbgm@gmail.com';
+    const senderEmail = process.env.BREVO_SENDER_EMAIL || 'mahakdeepkaurbgm@gmail.com';
     return new Promise((resolve, reject) => {
       const https = require('https');
       const reqData = JSON.stringify({
