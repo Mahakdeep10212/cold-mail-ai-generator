@@ -114,12 +114,7 @@ Open **`http://localhost:3000`** in your browser to start generating cold emails
    * **Value**: `https://your-backend-service.onrender.com` (pointing to your deployed Render URL)
 4. Deploy the service. Vercel will automatically compile the static assets using Vite.
 
----
 
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
 
 ## ✍️ Author
 - **Full-Stack Development & Architecture**: **Mahakdeep Kaur**
